@@ -44,7 +44,12 @@ public:
         }
     }
     void remove(T item);
-    bool contain(T item);
+
+    bool contain(T item){
+        if (find(item) != nullptr)
+            return true;
+        return false;
+    }
 
 private:
     struct Node{
@@ -72,10 +77,7 @@ private:
 
     Node* find(T item){
         Node* runner = head;
-        while (runner->data != item){
-            if (runner == nullptr)
-                return nullptr;
-
+        while (runner != nullptr && runner->data != item){
             if (item < runner->data){
                 runner = runner->left;
             }
@@ -105,5 +107,9 @@ int main() {
     a.add(9);
     a.add(4);
     a.print();
+    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
+    std::cout << (a.contain(6) ? "Yes" : "No") << std::endl;
+    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
+    std::cout << (a.contain(10) ? "Yes" : "No") << std::endl;
 
 }
