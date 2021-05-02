@@ -132,7 +132,19 @@ private:
         else
             b->parent->right = b;
     }
-    void small_right_tirn(Node* node);
+    void small_right_turn(Node* node){
+        Node* b = node->right;
+        node->left = b->right;
+        node->left->parent = node;
+        b->right = node;
+        b->parent = node->parent;
+        node->parent = b;
+        if (b->parent->left == node)
+            b->parent->left = b;
+        else
+            b->parent->right = b;
+
+    }
     void big_left_turn(Node* node);
     void big_right_turn(Node* node);
 
