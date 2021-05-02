@@ -12,9 +12,13 @@ public:
 
     }
 
+    void print(){
+        print(head);
+    }
+
     void add(T item){
         if (this->head == nullptr){
-            head = Node(item, nullptr);
+            head = new Node(item, nullptr);
         }
         else{
             Node* runner = head;
@@ -32,6 +36,7 @@ public:
                         runner = runner->left;
                     else {
                         runner->left = new Node(item, runner);
+                        break;
                     }
                 }
 
@@ -43,8 +48,8 @@ public:
 
 private:
     struct Node{
-    Node(T data, Node* parent){
-        data = data;
+    Node(T item, Node* parent){
+        data = item;
         parent = parent;
         left = nullptr;
         right = nullptr;
@@ -56,6 +61,14 @@ private:
     Node* parent;
     short diff;
 };
+
+    void print(Node* node){
+        if (node->left != nullptr)
+            print(node->left);
+        std::cout << node->data << ' ';
+        if (node->right != nullptr)
+            print(node->right);
+    }
     void small_left_turn(Node* node);
     void small_right_tirn(Node* node);
     void big_left_turn(Node* node);
@@ -65,5 +78,15 @@ private:
 };
 
 int main() {
+    AVL<int> a = AVL<int>(3);
+    a.add(3);
+    a.add(1);
+    a.add(7);
+    a.add(5);
+    a.add(2);
+    a.add(13);
+    a.add(9);
+    a.add(4);
+    a.print();
 
 }

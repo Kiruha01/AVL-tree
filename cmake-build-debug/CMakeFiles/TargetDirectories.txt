@@ -1,3 +1,0 @@
-/home/kirill/CLionProjects/AVL-tree/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/kirill/CLionProjects/AVL-tree/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/kirill/CLionProjects/AVL-tree/cmake-build-debug/CMakeFiles/AVL_tree.dir
