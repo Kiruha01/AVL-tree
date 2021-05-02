@@ -145,7 +145,26 @@ private:
             b->parent->right = b;
 
     }
-    void big_left_turn(Node* node);
+    void big_left_turn(Node* node){
+        Node* b = node->right;
+        Node* c = b->left;
+
+        node->right = c->left;
+        node->right->parent = node;
+
+        b->left = c->right;
+        b->left->parent = b;
+
+        c->parent = node->parent;
+        if (node->parent->left == node)
+            node->parent->left = c;
+        else
+            node->parent->right = c;
+        c->left = node;
+        node->parent = c;
+        c->right = b;
+        b->parent = c;
+    }
     void big_right_turn(Node* node);
 
     Node* head;
