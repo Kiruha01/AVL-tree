@@ -7,7 +7,7 @@ public:
         head = nullptr;
     }
 
-    AVL(T item){
+    explicit AVL(T item){
         head = new Node(item, nullptr);
 
     }
@@ -69,6 +69,23 @@ private:
         if (node->right != nullptr)
             print(node->right);
     }
+
+    Node* find(T item){
+        Node* runner = head;
+        while (runner->data != item){
+            if (runner == nullptr)
+                return nullptr;
+
+            if (item < runner->data){
+                runner = runner->left;
+            }
+            else {
+                runner = runner->right;
+            }
+        }
+        return runner;
+    }
+
     void small_left_turn(Node* node);
     void small_right_tirn(Node* node);
     void big_left_turn(Node* node);
