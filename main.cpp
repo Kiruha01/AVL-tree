@@ -41,9 +41,41 @@ public:
                 }
 
             }
+            //TODO: turn
         }
     }
-    void remove(T item);
+    void remove(T item){
+        Node* to_remove = find(item);
+        if (to_remove == nullptr)
+            return;
+
+        Node* new_node = to_remove->right;
+        if (new_node == nullptr){
+            if (to_remove->parent->left == to_remove)
+                to_remove->parent->left = to_remove->left;
+            else
+                to_remove->parent->right = to_remove->left;
+            return;
+        }
+        else {
+            while (new_node->left != nullptr)
+                new_node = new_node->left;
+
+            // connect children to new_node
+            new_node->parent->left = new_node->right;
+            new_node->right = new_node->parent;
+            new_node->left = to_remove->left;
+
+
+            // connect new_node to parent
+            new_node->parent = to_remove->parent;
+            if (to_remove->parent->left == to_remove)
+                to_remove->parent->left = new_node;
+            else
+                to_remove->parent->right = new_node;
+        }
+        // TODO: turn
+    }
 
     bool contain(T item){
         if (find(item) != nullptr)
@@ -53,9 +85,9 @@ public:
 
 private:
     struct Node{
-    Node(T item, Node* parent){
+    Node(T item, Node* prnt){
         data = item;
-        parent = parent;
+        parent = prnt;
         left = nullptr;
         right = nullptr;
     }
@@ -108,7 +140,11 @@ int main() {
     a.add(4);
     a.print();
     std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
+    a.remove(7);
+    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
     std::cout << (a.contain(6) ? "Yes" : "No") << std::endl;
+    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
+    a.remove(4);
     std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
     std::cout << (a.contain(10) ? "Yes" : "No") << std::endl;
 
