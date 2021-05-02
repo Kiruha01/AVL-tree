@@ -120,7 +120,18 @@ private:
         return runner;
     }
 
-    void small_left_turn(Node* node);
+    void small_left_turn(Node* node){
+        Node* b = node->right;
+        node->right = b->left;
+        node->right->parent = node;
+        b->left = node;
+        b->parent = node->parent;
+        node->parent = b;
+        if (b->parent->left == node)
+            b->parent->left = b;
+        else
+            b->parent->right = b;
+    }
     void small_right_tirn(Node* node);
     void big_left_turn(Node* node);
     void big_right_turn(Node* node);
