@@ -27,6 +27,7 @@ private:
         parent = prnt;
         left = nullptr;
         right = nullptr;
+        diff = 0;
     }
 
     T data;
@@ -78,6 +79,7 @@ void AVL<T>::add(T item) {
                     runner = runner->right;
                 else {
                     runner->right = new Node(item, runner);
+                    runner = runner->right;
                     break;
                 }
             }
@@ -86,12 +88,29 @@ void AVL<T>::add(T item) {
                     runner = runner->left;
                 else {
                     runner->left = new Node(item, runner);
+                    runner = runner->left;
                     break;
                 }
             }
 
         }
-        //TODO: turn
+        // recalculation diff
+        while (true){
+            if (runner->parent == nullptr)
+                break;
+            if (runner->parent->left == runner){
+                runner->parent->diff += 1;
+                runner = runner->parent;
+            }
+            else{
+                runner->parent->diff -= 1;
+                runner = runner->parent;
+            }
+            //TODO: turn
+            if (runner->diff == 0) {
+                break;
+            }
+        }
     }
 }
 
@@ -210,15 +229,15 @@ void AVL<T>::big_right_turn(AVL::Node *node) {
 }
 
 int main() {
-    AVL<int> a = AVL<int>(3);
-    a.add(3);
+    AVL<int> a = AVL<int>();
+    a.add(2);
     a.add(1);
     a.add(7);
-    a.add(5);
-    a.add(2);
-    a.add(13);
-    a.add(9);
+    a.add(8);
     a.add(4);
+    a.add(3);
+    a.add(5);
+    a.add(6);
     a.print();
     std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
     a.remove(7);
