@@ -16,72 +16,9 @@ public:
         print(head);
     }
 
-    void add(T item){
-        if (this->head == nullptr){
-            head = new Node(item, nullptr);
-        }
-        else{
-            Node* runner = head;
-            while(true){
-                if (runner->data < item) {
-                    if (runner->right != nullptr)
-                        runner = runner->right;
-                    else {
-                        runner->right = new Node(item, runner);
-                        break;
-                    }
-                }
-                else {
-                    if (runner->left != nullptr)
-                        runner = runner->left;
-                    else {
-                        runner->left = new Node(item, runner);
-                        break;
-                    }
-                }
-
-            }
-            //TODO: turn
-        }
-    }
-    void remove(T item){
-        Node* to_remove = find(item);
-        if (to_remove == nullptr)
-            return;
-
-        Node* new_node = to_remove->right;
-        if (new_node == nullptr){
-            if (to_remove->parent->left == to_remove)
-                to_remove->parent->left = to_remove->left;
-            else
-                to_remove->parent->right = to_remove->left;
-            return;
-        }
-        else {
-            while (new_node->left != nullptr)
-                new_node = new_node->left;
-
-            // connect children to new_node
-            new_node->parent->left = new_node->right;
-            new_node->right = new_node->parent;
-            new_node->left = to_remove->left;
-
-
-            // connect new_node to parent
-            new_node->parent = to_remove->parent;
-            if (to_remove->parent->left == to_remove)
-                to_remove->parent->left = new_node;
-            else
-                to_remove->parent->right = new_node;
-        }
-        // TODO: turn
-    }
-
-    bool contain(T item){
-        if (find(item) != nullptr)
-            return true;
-        return false;
-    }
+    void add(T item);
+    void remove(T item);
+    bool contain(T item);
 
 private:
     struct Node{
@@ -120,74 +57,157 @@ private:
         return runner;
     }
 
-    void small_left_turn(Node* node){
-        Node* b = node->right;
-        node->right = b->left;
-        node->right->parent = node;
-        b->left = node;
-        b->parent = node->parent;
-        node->parent = b;
-        if (b->parent->left == node)
-            b->parent->left = b;
-        else
-            b->parent->right = b;
-    }
-    void small_right_turn(Node* node){
-        Node* b = node->right;
-        node->left = b->right;
-        node->left->parent = node;
-        b->right = node;
-        b->parent = node->parent;
-        node->parent = b;
-        if (b->parent->left == node)
-            b->parent->left = b;
-        else
-            b->parent->right = b;
-
-    }
-    void big_left_turn(Node* node){
-        Node* b = node->right;
-        Node* c = b->left;
-
-        node->right = c->left;
-        node->right->parent = node;
-
-        b->left = c->right;
-        b->left->parent = b;
-
-        c->parent = node->parent;
-        if (node->parent->left == node)
-            node->parent->left = c;
-        else
-            node->parent->right = c;
-        c->left = node;
-        node->parent = c;
-        c->right = b;
-        b->parent = c;
-    }
-    void big_right_turn(Node* node){
-        Node* b = node->left;
-        Node* c = b->right;
-
-        node->left = c->right;
-        node->left->parent = node;
-
-        b->right = c->left;
-        b->right->parent = b;
-
-        c->parent = node->parent;
-        if (node->parent->left == node)
-            node->parent->left = c;
-        else
-            node->parent->right = c;
-        c->right = node;
-        node->parent = c;
-        c->left = b;
-        b->parent = c;
-    }
+    void small_left_turn(Node* node);
+    void small_right_turn(Node* node);
+    void big_left_turn(Node* node);
+    void big_right_turn(Node* node);
 
     Node* head;
 };
+
+template<typename T>
+void AVL<T>::add(T item) {
+    if (this->head == nullptr){
+        head = new Node(item, nullptr);
+    }
+    else{
+        Node* runner = head;
+        while(true){
+            if (runner->data < item) {
+                if (runner->right != nullptr)
+                    runner = runner->right;
+                else {
+                    runner->right = new Node(item, runner);
+                    break;
+                }
+            }
+            else {
+                if (runner->left != nullptr)
+                    runner = runner->left;
+                else {
+                    runner->left = new Node(item, runner);
+                    break;
+                }
+            }
+
+        }
+        //TODO: turn
+    }
+}
+
+template<typename T>
+void AVL<T>::remove(T item) {
+    Node* to_remove = find(item);
+    if (to_remove == nullptr)
+        return;
+
+    Node* new_node = to_remove->right;
+    if (new_node == nullptr){
+        if (to_remove->parent->left == to_remove)
+            to_remove->parent->left = to_remove->left;
+        else
+            to_remove->parent->right = to_remove->left;
+        return;
+    }
+    else {
+        while (new_node->left != nullptr)
+            new_node = new_node->left;
+
+        // connect children to new_node
+        new_node->parent->left = new_node->right;
+        new_node->right = new_node->parent;
+        new_node->left = to_remove->left;
+
+
+        // connect new_node to parent
+        new_node->parent = to_remove->parent;
+        if (to_remove->parent->left == to_remove)
+            to_remove->parent->left = new_node;
+        else
+            to_remove->parent->right = new_node;
+    }
+    // TODO: turn
+}
+
+template<typename T>
+bool AVL<T>::contain(T item) {
+    if (find(item) != nullptr)
+        return true;
+    return false;
+}
+
+template<typename T>
+void AVL<T>::small_left_turn(AVL::Node *node) {
+    Node* b = node->right;
+    node->right = b->left;
+    node->right->parent = node;
+    b->left = node;
+    b->parent = node->parent;
+    node->parent = b;
+    if (b->parent->left == node)
+        b->parent->left = b;
+    else
+        b->parent->right = b;
+}
+
+template<typename T>
+void AVL<T>::small_right_turn(AVL::Node *node) {
+    Node* b = node->right;
+    node->left = b->right;
+    node->left->parent = node;
+    b->right = node;
+    b->parent = node->parent;
+    node->parent = b;
+    if (b->parent->left == node)
+        b->parent->left = b;
+    else
+        b->parent->right = b;
+
+}
+
+template<typename T>
+void AVL<T>::big_left_turn(AVL::Node *node) {
+    Node* b = node->right;
+    Node* c = b->left;
+
+    node->right = c->left;
+    node->right->parent = node;
+
+    b->left = c->right;
+    b->left->parent = b;
+
+    c->parent = node->parent;
+    if (node->parent->left == node)
+        node->parent->left = c;
+    else
+        node->parent->right = c;
+    c->left = node;
+    node->parent = c;
+    c->right = b;
+    b->parent = c;
+}
+
+template<typename T>
+void AVL<T>::big_right_turn(AVL::Node *node) {
+    Node* b = node->left;
+    Node* c = b->right;
+
+    node->left = c->right;
+    node->left->parent = node;
+
+    b->right = c->left;
+    b->right->parent = b;
+
+    c->parent = node->parent;
+    if (node->parent->left == node)
+        node->parent->left = c;
+    else
+        node->parent->right = c;
+    c->right = node;
+    node->parent = c;
+    c->left = b;
+    b->parent = c;
+}
 
 int main() {
     AVL<int> a = AVL<int>(3);
