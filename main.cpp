@@ -121,22 +121,31 @@ void AVL<T>::remove(T item) {
         return;
 
     Node* new_node = to_remove->right;
+    Node* runner; // с этой ноды мы начинаем пересчет diff
     if (new_node == nullptr){
-        if (to_remove->parent->left == to_remove)
+        if (to_remove->parent->left == to_remove) {
             to_remove->parent->left = to_remove->left;
-        else
+            to_remove->left->parent = to_remove->parent;
+            to_remove->parent->diff -= 1;
+        }
+        else {
             to_remove->parent->right = to_remove->left;
-        return;
+            to_remove->left->parent = to_remove->parent;
+            to_remove->parent->diff += 1;
+        }
+        runner = to_remove->parent;
     }
     else {
         while (new_node->left != nullptr)
             new_node = new_node->left;
+        new_node->diff = to_remove->diff;
 
         // connect children to new_node
         new_node->parent->left = new_node->right;
         new_node->right = new_node->parent;
         new_node->left = to_remove->left;
 
+        runner = new_node->parent;
 
         // connect new_node to parent
         new_node->parent = to_remove->parent;
@@ -144,6 +153,17 @@ void AVL<T>::remove(T item) {
             to_remove->parent->left = new_node;
         else
             to_remove->parent->right = new_node;
+    }
+    // recalculation diff
+    while (runner->parent != nullptr){
+        if (runner->parent->left == runner)
+        {
+            runner->parent->diff -= 1;
+        }
+        else{
+            runner->parent->diff += 1;
+        }
+        runner = runner->parent;
     }
     // TODO: turn
 }
@@ -239,13 +259,13 @@ int main() {
     a.add(5);
     a.add(6);
     a.print();
-    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
-    a.remove(7);
-    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
-    std::cout << (a.contain(6) ? "Yes" : "No") << std::endl;
-    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
-    a.remove(4);
-    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
-    std::cout << (a.contain(10) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
+//    a.remove(2);
+//    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(6) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
+//    a.remove(4);
+//    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(10) ? "Yes" : "No") << std::endl;
 
 }
