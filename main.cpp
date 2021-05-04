@@ -63,6 +63,8 @@ private:
     void big_left_turn(Node* node);
     void big_right_turn(Node* node);
 
+    void do_rotation(Node* node);
+
     Node* head;
 };
 
@@ -100,13 +102,11 @@ void AVL<T>::add(T item) {
                 break;
             if (runner->parent->left == runner){
                 runner->parent->diff += 1;
-                runner = runner->parent;
             }
-            else{
+            else
                 runner->parent->diff -= 1;
-                runner = runner->parent;
-            }
-            //TODO: turn
+            runner = runner->parent;
+            do_rotation(runner);
             if (runner->diff == 0) {
                 break;
             }
@@ -170,7 +170,7 @@ void AVL<T>::remove(T item) {
             runner->parent->diff += 1;
         }
         runner = runner->parent;
-        // TODO: turn
+        do_rotation(runner);
     }
 }
 
@@ -196,8 +196,6 @@ void AVL<T>::small_left_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
-    node->height = node->calculate_height();
-    b->height = b->calculate_height();
 }
 
 template<typename T>
@@ -271,6 +269,26 @@ void AVL<T>::big_left_turn(AVL::Node *node) {
     node->parent = c;
     c->right = b;
     b->parent = c;
+}
+
+template<typename T>
+void AVL<T>::do_rotation(AVL::Node *node) {
+    if (node->diff == 2){
+        if (node->left->diff == 1 || node->left->diff == 0){
+            small_right_turn(node);
+        }
+        else if (node->left->diff == -1){
+            big_right_turn(node);
+        }
+    }
+    else if (node->diff == -2){
+        if (node->right->diff == -1 || node->right->diff == 0){
+            small_left_turn(node);
+        }
+        else if (node->right->diff == 1){
+            big_left_turn(node);
+        }
+    }
 }
 
 int main() {
