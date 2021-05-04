@@ -5,12 +5,11 @@ class AVL{
 public:
     AVL(){
         head = nullptr;
-        __correction__ = 0;
     }
 
     explicit AVL(T item){
         head = new Node(item, nullptr);
-        __correction__ = 0;
+
     }
 
     void print(){
@@ -20,12 +19,6 @@ public:
     void add(T item);
     void remove(T item);
     bool contain(T item);
-
-    bool check_correction(){
-        ++__correction__;
-        if (check_correction(head))
-            std::cout << "\t\tChecking Done!\n";
-    }
 
 private:
     struct Node{
@@ -43,39 +36,6 @@ private:
     Node* parent;
     short diff;
 };
-
-    int height(Node* node){
-        if (node == nullptr)
-            return 0;
-        if (node->right == nullptr) {
-            if (node->left == nullptr)
-                return 1;
-            else
-                return height(node->left) + 1;
-        } else {
-            if (node->left == nullptr)
-                return height(node->right) + 1;
-            else
-                return std::max(height(node->left), height(node->right)) + 1;
-        }
-    }
-
-    bool check_correction(Node* node){
-        int d  = height(node->left) - height(node->right);
-        if (d != node->diff){
-            std::cout << "\tError! call No " << __correction__ << std::endl;
-            std::cout << "\tNode with data " << node->data << std::endl;
-            std::cout << "\tDiff is " << node->diff << ", but actually is " << d << std::endl;
-            return false;
-        }
-        else{
-            if (node->left != nullptr)
-                check_correction(node->left);
-            if (node->right != nullptr)
-                check_correction(node->right);
-        }
-        return true;
-    }
 
     void print(Node* node){
         if (node->left != nullptr)
@@ -99,14 +59,13 @@ private:
     }
 
     void small_left_turn(Node* node);
-    void small_right_turn(Node* node);
+    void small_right_tirn(Node* node);
     void big_left_turn(Node* node);
     void big_right_turn(Node* node);
 
     void do_rotation(Node* node);
 
     Node* head;
-    int __correction__;
 };
 
 template<typename T>
@@ -166,8 +125,7 @@ void AVL<T>::remove(T item) {
     if (new_node == nullptr){
         if (to_remove->parent->left == to_remove) {
             to_remove->parent->left = to_remove->left;
-            if (to_remove->left != nullptr)
-                to_remove->left->parent = to_remove->parent;
+            to_remove->left->parent = to_remove->parent;
             to_remove->parent->diff -= 1;
         }
         else {
@@ -180,40 +138,24 @@ void AVL<T>::remove(T item) {
     else {
         while (new_node->left != nullptr)
             new_node = new_node->left;
-        if (new_node->parent == to_remove){
-            new_node->parent = to_remove->parent;
-            if (to_remove->parent->left == to_remove)
-                to_remove->parent->left = new_node;
-            else
-                to_remove->parent->right = new_node;
-            new_node->left = to_remove->left;
-            if (to_remove->left != nullptr)
-                to_remove->left->parent = new_node;
-            new_node->diff += 1;
-            if (new_node->diff == 1 || new_node->diff == -1)
-                return;
-            runner = new_node;
-        }
-        else {
-            new_node->diff = to_remove->diff;
+        new_node->diff = to_remove->diff;
 
-            new_node->parent->diff -= 1;
-            // connect children to new_node
-            new_node->parent->left = new_node->right;
-            new_node->right = to_remove->right;
-            new_node->left = to_remove->left;
+        new_node->parent->diff -= 1;
+        // connect children to new_node
+        new_node->parent->left = new_node->right;
+        new_node->right = to_remove->right;
+        new_node->left = to_remove->left;
 
-            runner = new_node->parent;
+        runner = new_node->parent;
 
-            // connect new_node to parent
-            new_node->parent = to_remove->parent;
-            if (to_remove->parent == nullptr)
-                head = new_node;
-            else if (to_remove->parent->left == to_remove)
-                to_remove->parent->left = new_node;
-            else
-                to_remove->parent->right = new_node;
-        }
+        // connect new_node to parent
+        new_node->parent = to_remove->parent;
+        if (to_remove->parent == nullptr)
+            head = new_node;
+        else if (to_remove->parent->left == to_remove)
+            to_remove->parent->left = new_node;
+        else
+            to_remove->parent->right = new_node;
     }
     // recalculation diff
     while (runner->parent != nullptr){
@@ -254,20 +196,12 @@ void AVL<T>::small_left_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
-
-    // change diff
-    if (b->diff == -1){
-        node->diff = 0;
-        b->diff = 0;
-    }
-    else if (b->diff == 0){
-        node->diff = -1;
-        b->diff = -1;
-    }
+    node->height = node->calculate_height();
+    b->height = b->calculate_height();
 }
 
 template<typename T>
-void AVL<T>::small_right_turn(AVL::Node *node) {
+void AVL<T>::small_right_tirn(AVL::Node *node) {
     Node* b = node->right;
     node->left = b->right;
     if (node->left != nullptr)
@@ -281,16 +215,11 @@ void AVL<T>::small_right_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
-    // change diff
-    if (b->diff == 1){
-        node->diff = 0;
-        b->diff = 0;
-    }
-    else if (b->diff == 0){
-        b->diff = 1;
-        node->diff = 0;
-    }
+
 }
+
+
+
 
 template<typename T>
 void AVL<T>::big_right_turn(AVL::Node *node) {
@@ -316,24 +245,10 @@ void AVL<T>::big_right_turn(AVL::Node *node) {
     node->parent = c;
     c->left = b;
     b->parent = c;
-
-    // change diff
-    if (c->diff == 1){
-        node->diff = -1;
-        b->diff = 0;
-    }
-    else if (c->diff == 0){
-        node->diff = 0;
-        b->diff = 0;
-    }
-    else if (c->diff == -1){
-        node->diff = 0;
-        b->diff = 1;
-    }
-    c->diff = 0;
 }
 
 template<typename T>
+<<<<<<< Updated upstream
 void AVL<T>::big_left_turn(AVL::Node *node) {
     Node* b = node->right;
     Node* c = b->left;
@@ -353,35 +268,15 @@ void AVL<T>::big_left_turn(AVL::Node *node) {
         else
             node->parent->right = c;
     }
-    else{
-        head = c;
-    }
     c->left = node;
     node->parent = c;
     c->right = b;
     b->parent = c;
-
-    // change diff
-    if (c->diff == 1){
-        node->diff = 0;
-        b->diff = -1;
-    }
-    else if (c->diff == 0){
-        node->diff = 0;
-        b->diff = 0;
-    }
-    else if (c->diff == -1){
-        node->diff = 1;
-        b->diff = 0;
-    }
-    c->diff = 0;
-}
-
-template<typename T>
+=======
 void AVL<T>::do_rotation(AVL::Node *node) {
     if (node->diff == 2){
         if (node->left->diff == 1 || node->left->diff == 0){
-            small_right_turn(node);
+            small_right_tirn(node);
         }
         else if (node->left->diff == -1){
             big_right_turn(node);
@@ -395,25 +290,28 @@ void AVL<T>::do_rotation(AVL::Node *node) {
             big_left_turn(node);
         }
     }
+>>>>>>> Stashed changes
 }
 
 int main() {
     AVL<int> a = AVL<int>();
-    a.add(1);a.check_correction();
-    a.add(2);a.check_correction();
-    a.add(3);a.check_correction();
-    a.add(4);a.check_correction();
-    a.add(5);a.check_correction();
-    a.add(6);a.check_correction();
-    a.add(7);a.check_correction();
-    a.add(8);a.check_correction();
-    a.add(9);a.check_correction();
-    a.add(10);a.check_correction();
-    a.add(11);a.check_correction();
-    a.remove(1);a.check_correction();
-    a.remove(5);a.check_correction();
-    a.remove(7);a.check_correction();
-    a.remove(6);a.check_correction();
-    a.remove(8);a.check_correction();
-    a.remove(2);a.check_correction();
+    a.add(2);
+    a.add(1);
+    a.add(7);
+    a.add(8);
+    a.add(4);
+    a.add(3);
+    a.add(5);
+    a.add(6);
+    a.print();
+    a.remove(2);
+//    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
+//    a.remove(2);
+//    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(6) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
+//    a.remove(4);
+//    std::cout << (a.contain(4) ? "Yes" : "No") << std::endl;
+//    std::cout << (a.contain(10) ? "Yes" : "No") << std::endl;
+
 }
