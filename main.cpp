@@ -47,6 +47,7 @@ private:
     int height(Node* node){
         if (node == nullptr)
             return 0;
+//        std::cout << __correction__ << ' ';
         if (node->right == nullptr) {
             if (node->left == nullptr)
                 return 1;
@@ -172,10 +173,14 @@ void AVL<T>::remove(T item) {
         }
         else {
             to_remove->parent->right = to_remove->left;
-            to_remove->left->parent = to_remove->parent;
+            if (to_remove->left != nullptr)
+                to_remove->left->parent = to_remove->parent;
             to_remove->parent->diff += 1;
         }
         runner = to_remove->parent;
+        do_rotation(runner);
+        if (runner->diff == -1 || runner->diff == 1)
+            return;
     }
     else {
         while (new_node->left != nullptr)
@@ -189,10 +194,12 @@ void AVL<T>::remove(T item) {
             new_node->left = to_remove->left;
             if (to_remove->left != nullptr)
                 to_remove->left->parent = new_node;
-            new_node->diff += 1;
-            if (new_node->diff == 1 || new_node->diff == -1)
-                return;
+            new_node->diff = to_remove->diff + 1;
             runner = new_node;
+            do_rotation(runner);
+            if (new_node->diff == 1 || new_node->diff == -1) {
+                return;
+            }
         }
         else {
             new_node->diff = to_remove->diff;
@@ -254,6 +261,8 @@ void AVL<T>::small_left_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
+    else
+        head = b;
 
     // change diff
     if (b->diff == -1){
@@ -262,7 +271,7 @@ void AVL<T>::small_left_turn(AVL::Node *node) {
     }
     else if (b->diff == 0){
         node->diff = -1;
-        b->diff = -1;
+        b->diff = +1;
     }
 }
 
@@ -281,14 +290,16 @@ void AVL<T>::small_right_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
+    else
+        head = b;
     // change diff
     if (b->diff == 1){
         node->diff = 0;
         b->diff = 0;
     }
     else if (b->diff == 0){
-        b->diff = 1;
-        node->diff = 0;
+        b->diff = -1;
+        node->diff = 1;
     }
 }
 
@@ -312,6 +323,8 @@ void AVL<T>::big_right_turn(AVL::Node *node) {
         else
             node->parent->right = c;
     }
+    else
+        head = c;
     c->right = node;
     node->parent = c;
     c->left = b;
@@ -406,14 +419,22 @@ int main() {
     a.add(5);a.check_correction();
     a.add(6);a.check_correction();
     a.add(7);a.check_correction();
-    a.add(8);a.check_correction();
+    a.add(8);
+    a.check_correction();
     a.add(9);a.check_correction();
     a.add(10);a.check_correction();
     a.add(11);a.check_correction();
     a.remove(1);a.check_correction();
-    a.remove(5);a.check_correction();
+    a.remove(5);
+    a.check_correction();
     a.remove(7);a.check_correction();
-    a.remove(6);a.check_correction();
+    a.remove(6);
+    a.check_correction();
     a.remove(8);a.check_correction();
     a.remove(2);a.check_correction();
+    a.print();
+    if (a.contain(3))
+        std::cout << "3";
+    if (a.contain(5))
+        std::cout << 5;
 }
