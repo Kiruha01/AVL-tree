@@ -185,29 +185,66 @@ template<typename T>
 void AVL<T>::small_left_turn(AVL::Node *node) {
     Node* b = node->right;
     node->right = b->left;
-    node->right->parent = node;
+    if (node->right != nullptr)
+        node->right->parent = node;
     b->left = node;
     b->parent = node->parent;
     node->parent = b;
-    if (b->parent->left == node)
-        b->parent->left = b;
-    else
-        b->parent->right = b;
+    if (b->parent != nullptr) {
+        if (b->parent->left == node)
+            b->parent->left = b;
+        else
+            b->parent->right = b;
+    }
+    node->height = node->calculate_height();
+    b->height = b->calculate_height();
 }
 
 template<typename T>
 void AVL<T>::small_right_turn(AVL::Node *node) {
     Node* b = node->right;
     node->left = b->right;
-    node->left->parent = node;
+    if (node->left != nullptr)
+        node->left->parent = node;
     b->right = node;
     b->parent = node->parent;
     node->parent = b;
-    if (b->parent->left == node)
-        b->parent->left = b;
-    else
-        b->parent->right = b;
+    if (b->parent != nullptr) {
+        if (b->parent->left == node)
+            b->parent->left = b;
+        else
+            b->parent->right = b;
+    }
 
+}
+
+
+
+
+template<typename T>
+void AVL<T>::big_right_turn(AVL::Node *node) {
+    Node* b = node->left;
+    Node* c = b->right;
+
+    node->left = c->right;
+    if (node->left != nullptr)
+        node->left->parent = node;
+
+    b->right = c->left;
+    if (b->right != nullptr)
+        b->right->parent = b;
+
+    c->parent = node->parent;
+    if (node->parent != nullptr) {
+        if (node->parent->left == node)
+            node->parent->left = c;
+        else
+            node->parent->right = c;
+    }
+    c->right = node;
+    node->parent = c;
+    c->left = b;
+    b->parent = c;
 }
 
 template<typename T>
@@ -216,41 +253,23 @@ void AVL<T>::big_left_turn(AVL::Node *node) {
     Node* c = b->left;
 
     node->right = c->left;
-    node->right->parent = node;
+    if (node->right != nullptr)
+        node->right->parent = node;
 
     b->left = c->right;
-    b->left->parent = b;
+    if (b->left != nullptr)
+        b->left->parent = b;
 
     c->parent = node->parent;
-    if (node->parent->left == node)
-        node->parent->left = c;
-    else
-        node->parent->right = c;
+    if (node->parent != nullptr) {
+        if (node->parent->left == node)
+            node->parent->left = c;
+        else
+            node->parent->right = c;
+    }
     c->left = node;
     node->parent = c;
     c->right = b;
-    b->parent = c;
-}
-
-template<typename T>
-void AVL<T>::big_right_turn(AVL::Node *node) {
-    Node* b = node->left;
-    Node* c = b->right;
-
-    node->left = c->right;
-    node->left->parent = node;
-
-    b->right = c->left;
-    b->right->parent = b;
-
-    c->parent = node->parent;
-    if (node->parent->left == node)
-        node->parent->left = c;
-    else
-        node->parent->right = c;
-    c->right = node;
-    node->parent = c;
-    c->left = b;
     b->parent = c;
 }
 
