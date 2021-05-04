@@ -138,24 +138,40 @@ void AVL<T>::remove(T item) {
     else {
         while (new_node->left != nullptr)
             new_node = new_node->left;
-        new_node->diff = to_remove->diff;
+        if (new_node->parent == to_remove){
+            new_node->parent = to_remove->parent;
+            if (to_remove->parent->left == to_remove)
+                to_remove->parent->left = new_node;
+            else
+                to_remove->parent->right = new_node;
+            new_node->left = to_remove->left;
+            if (to_remove->left != nullptr)
+                to_remove->left->parent = new_node;
+            new_node->diff += 1;
+            if (new_node->diff == 1 || new_node->diff == -1)
+                return;
+            runner = new_node;
+        }
+        else {
+            new_node->diff = to_remove->diff;
 
-        new_node->parent->diff -= 1;
-        // connect children to new_node
-        new_node->parent->left = new_node->right;
-        new_node->right = to_remove->right;
-        new_node->left = to_remove->left;
+            new_node->parent->diff -= 1;
+            // connect children to new_node
+            new_node->parent->left = new_node->right;
+            new_node->right = to_remove->right;
+            new_node->left = to_remove->left;
 
-        runner = new_node->parent;
+            runner = new_node->parent;
 
-        // connect new_node to parent
-        new_node->parent = to_remove->parent;
-        if (to_remove->parent == nullptr)
-            head = new_node;
-        else if (to_remove->parent->left == to_remove)
-            to_remove->parent->left = new_node;
-        else
-            to_remove->parent->right = new_node;
+            // connect new_node to parent
+            new_node->parent = to_remove->parent;
+            if (to_remove->parent == nullptr)
+                head = new_node;
+            else if (to_remove->parent->left == to_remove)
+                to_remove->parent->left = new_node;
+            else
+                to_remove->parent->right = new_node;
+        }
     }
     // recalculation diff
     while (runner->parent != nullptr){
