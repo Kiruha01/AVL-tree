@@ -140,22 +140,28 @@ void AVL<T>::remove(T item) {
             new_node = new_node->left;
         new_node->diff = to_remove->diff;
 
+        new_node->parent->diff -= 1;
         // connect children to new_node
         new_node->parent->left = new_node->right;
-        new_node->right = new_node->parent;
+        new_node->right = to_remove->right;
         new_node->left = to_remove->left;
 
         runner = new_node->parent;
 
         // connect new_node to parent
         new_node->parent = to_remove->parent;
-        if (to_remove->parent->left == to_remove)
+        if (to_remove->parent == nullptr)
+            head = new_node;
+        else if (to_remove->parent->left == to_remove)
             to_remove->parent->left = new_node;
         else
             to_remove->parent->right = new_node;
     }
     // recalculation diff
     while (runner->parent != nullptr){
+        if (runner->parent->diff == 1 || runner->parent->diff == -1) {
+            break;
+        }
         if (runner->parent->left == runner)
         {
             runner->parent->diff -= 1;
@@ -164,8 +170,8 @@ void AVL<T>::remove(T item) {
             runner->parent->diff += 1;
         }
         runner = runner->parent;
+        // TODO: turn
     }
-    // TODO: turn
 }
 
 template<typename T>
@@ -259,6 +265,7 @@ int main() {
     a.add(5);
     a.add(6);
     a.print();
+    a.remove(2);
 //    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
 //    a.remove(2);
 //    std::cout << (a.contain(7) ? "Yes" : "No") << std::endl;
