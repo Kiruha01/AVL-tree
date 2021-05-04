@@ -196,6 +196,16 @@ void AVL<T>::small_left_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
+
+    // change diff
+    if (b->diff == -1){
+        node->diff = 0;
+        b->diff = 0;
+    }
+    else if (b->diff == 0){
+        node->diff = -1;
+        b->diff = -1;
+    }
 }
 
 template<typename T>
@@ -213,11 +223,16 @@ void AVL<T>::small_right_turn(AVL::Node *node) {
         else
             b->parent->right = b;
     }
-
+    // change diff
+    if (b->diff == 1){
+        node->diff = 0;
+        b->diff = 0;
+    }
+    else if (b->diff == 0){
+        b->diff = 1;
+        node->diff = 0;
+    }
 }
-
-
-
 
 template<typename T>
 void AVL<T>::big_right_turn(AVL::Node *node) {
@@ -243,6 +258,21 @@ void AVL<T>::big_right_turn(AVL::Node *node) {
     node->parent = c;
     c->left = b;
     b->parent = c;
+
+    // change diff
+    if (c->diff == 1){
+        node->diff = -1;
+        b->diff = 0;
+    }
+    else if (c->diff == 0){
+        node->diff = 0;
+        b->diff = 0;
+    }
+    else if (c->diff == -1){
+        node->diff = 0;
+        b->diff = 1;
+    }
+    c->diff = 0;
 }
 
 template<typename T>
@@ -265,10 +295,28 @@ void AVL<T>::big_left_turn(AVL::Node *node) {
         else
             node->parent->right = c;
     }
+    else{
+        head = c;
+    }
     c->left = node;
     node->parent = c;
     c->right = b;
     b->parent = c;
+
+    // change diff
+    if (c->diff == 1){
+        node->diff = 0;
+        b->diff = -1;
+    }
+    else if (c->diff == 0){
+        node->diff = 0;
+        b->diff = 0;
+    }
+    else if (c->diff == -1){
+        node->diff = 1;
+        b->diff = 0;
+    }
+    c->diff = 0;
 }
 
 template<typename T>
