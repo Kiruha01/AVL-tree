@@ -104,7 +104,7 @@ private:
     void big_left_turn(Node* node);
     void big_right_turn(Node* node);
 
-    void do_rotation(Node* node);
+    bool do_rotation(Node* node);
 
     Node* head;
     int __correction__;
@@ -148,7 +148,8 @@ void AVL<T>::add(T item) {
             else
                 runner->parent->diff -= 1;
             runner = runner->parent;
-            do_rotation(runner);
+            if (do_rotation(runner))
+                runner = runner->parent;
             if (runner->diff == 0) {
                 break;
             }
@@ -178,7 +179,8 @@ void AVL<T>::remove(T item) {
             to_remove->parent->diff += 1;
         }
         runner = to_remove->parent;
-        do_rotation(runner);
+        if (do_rotation(runner))
+            runner = runner->parent;
         if (runner->diff == -1 || runner->diff == 1)
             return;
     }
@@ -196,7 +198,8 @@ void AVL<T>::remove(T item) {
                 to_remove->left->parent = new_node;
             new_node->diff = to_remove->diff + 1;
             runner = new_node;
-            do_rotation(runner);
+            if (do_rotation(runner))
+                runner = runner->parent;
             if (new_node->diff == 1 || new_node->diff == -1) {
                 return;
             }
@@ -233,7 +236,9 @@ void AVL<T>::remove(T item) {
             runner->parent->diff += 1;
         }
         runner = runner->parent;
-        do_rotation(runner);
+        if (do_rotation(runner)){
+            runner = runner->parent;
+        }
         if (runner->diff == 1 || runner->diff == -1) {
             break;
         }
@@ -391,24 +396,31 @@ void AVL<T>::big_left_turn(AVL::Node *node) {
     c->diff = 0;
 }
 
+
 template<typename T>
-void AVL<T>::do_rotation(AVL::Node *node) {
+// "true" if rotation was did, "false" otherwise
+bool AVL<T>::do_rotation(AVL::Node *node) {
     if (node->diff == 2){
         if (node->left->diff == 1 || node->left->diff == 0){
             small_right_turn(node);
+            return true;
         }
         else if (node->left->diff == -1){
             big_right_turn(node);
+            return true;
         }
     }
     else if (node->diff == -2){
         if (node->right->diff == -1 || node->right->diff == 0){
             small_left_turn(node);
+            return true;
         }
         else if (node->right->diff == 1){
             big_left_turn(node);
+            return true;
         }
     }
+    return false;
 }
 
 int main() {
@@ -423,10 +435,12 @@ int main() {
     a.add(6);a.check_correction();
     a.add(11);a.check_correction();
     a.add(7);a.check_correction();
-    a.add(8);a.check_correction();
+    a.add(8);
+    a.check_correction();
     a.add(9);a.check_correction();
     a.remove(5);a.check_correction();
-    a.remove(6);a.check_correction();
+    a.remove(6);
+    a.check_correction();
     a.remove(7);a.check_correction();
     a.remove(8);
     a.check_correction();
