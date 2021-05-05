@@ -210,8 +210,15 @@ void AVL<T>::remove(T item) {
             new_node->parent->diff -= 1;
             // connect children to new_node
             new_node->parent->left = new_node->right;
+            // TODO: try inline function to set child
+            if (new_node->right != nullptr)
+                new_node->right->parent = new_node->parent;
             new_node->right = to_remove->right;
+            if (to_remove->right != nullptr)
+                to_remove->right->parent = new_node;
             new_node->left = to_remove->left;
+            if (to_remove->left != nullptr)
+                to_remove->left->parent = new_node;
 
             runner = new_node->parent;
 
@@ -441,7 +448,8 @@ int main() {
     a.remove(5);a.check_correction();
     a.remove(6);
     a.check_correction();
-    a.remove(7);a.check_correction();
+    a.remove(7);
+    a.check_correction();
     a.remove(8);
     a.check_correction();
     a.remove(2);a.check_correction();
