@@ -230,6 +230,8 @@ void AVL<T>::remove(T item) {
                 to_remove->parent->left = new_node;
             else
                 to_remove->parent->right = new_node;
+            if (runner->diff == -1 || runner->diff == 1)
+                return;
         }
     }
     // recalculation diff
