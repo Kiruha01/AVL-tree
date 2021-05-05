@@ -224,9 +224,7 @@ void AVL<T>::remove(T item) {
     }
     // recalculation diff
     while (runner->parent != nullptr){
-        if (runner->parent->diff == 1 || runner->parent->diff == -1) {
-            break;
-        }
+
         if (runner->parent->left == runner)
         {
             runner->parent->diff -= 1;
@@ -236,6 +234,9 @@ void AVL<T>::remove(T item) {
         }
         runner = runner->parent;
         do_rotation(runner);
+        if (runner->diff == 1 || runner->diff == -1) {
+            break;
+        }
     }
 }
 
@@ -415,24 +416,23 @@ int main() {
     a.add(1);a.check_correction();
     a.add(2);a.check_correction();
     a.add(3);a.check_correction();
+    a.add(10);a.check_correction();
     a.add(4);a.check_correction();
     a.add(5);a.check_correction();
-    a.add(6);a.check_correction();
-    a.add(7);a.check_correction();
-    a.add(8);
-    a.check_correction();
-    a.add(9);a.check_correction();
-    a.add(10);a.check_correction();
-    a.add(11);a.check_correction();
     a.remove(1);a.check_correction();
-    a.remove(5);
-    a.check_correction();
+    a.add(6);a.check_correction();
+    a.add(11);a.check_correction();
+    a.add(7);a.check_correction();
+    a.add(8);a.check_correction();
+    a.add(9);a.check_correction();
+    a.remove(5);a.check_correction();
+    a.remove(6);a.check_correction();
     a.remove(7);a.check_correction();
-    a.remove(6);
+    a.remove(8);
     a.check_correction();
-    a.remove(8);a.check_correction();
     a.remove(2);a.check_correction();
     a.print();
+    std::cout << std::endl;
     if (a.contain(3))
         std::cout << "3";
     if (a.contain(5))
