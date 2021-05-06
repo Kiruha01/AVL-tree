@@ -132,6 +132,7 @@ void AVL<T>::remove(T item) {
             to_remove->parent->diff += 1;
         }
         runner = to_remove->parent;
+        delete to_remove;
         if (do_rotation(runner))
             runner = runner->parent;
         if (runner->diff == -1 || runner->diff == 1)
@@ -151,6 +152,7 @@ void AVL<T>::remove(T item) {
                 to_remove->left->parent = new_node;
             new_node->diff = to_remove->diff + 1;
             runner = new_node;
+            delete to_remove;
             if (do_rotation(runner))
                 runner = runner->parent;
             if (new_node->diff == 1 || new_node->diff == -1) {
@@ -183,6 +185,7 @@ void AVL<T>::remove(T item) {
                 to_remove->parent->left = new_node;
             else
                 to_remove->parent->right = new_node;
+            delete to_remove;
             if (runner->diff == -1 || runner->diff == 1)
                 return;
         }
@@ -360,7 +363,7 @@ void AVL<T>::big_left_turn(AVL::Node *node) {
 
 
 template<typename T>
-// "true" if rotation was did, "false" otherwise
+// "true" if rotation was done, "false" otherwise
 bool AVL<T>::do_rotation(AVL::Node *node) {
     if (node->diff == 2){
         if (node->left->diff == 1 || node->left->diff == 0){
