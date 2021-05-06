@@ -1,4 +1,5 @@
 #include <iostream>
+#include "fstream"
 
 template <typename T>
 class AVL{
@@ -14,6 +15,13 @@ public:
     void add(T item);
     void remove(T item);
     bool contain(T item);
+
+    T get_head(){
+        if (head == nullptr)
+            return 0;
+        else
+            return head->data;
+    }
 
 private:
     struct Node{
@@ -389,5 +397,38 @@ bool AVL<T>::do_rotation(AVL::Node *node) {
 }
 
 int main() {
+    std::fstream filein, fileout;
+    filein.open("input.txt", std::ios_base::in);
+    fileout.open("output.txt", std::ios_base::out);
 
+    AVL<int> tree = AVL<int>();
+
+    if (fileout.is_open() && filein.is_open()) {
+        while (!filein.eof()) {
+            std::string c;
+            filein >> c;
+            switch (c[0]) {
+                case '+':
+                    filein >> c;
+                    tree.add(std::atoi(c.c_str()));
+                    fileout << tree.get_head() << std::endl;
+                    break;
+                case '-':
+                    filein >> c;
+                    tree.remove(std::atoi(c.c_str()));
+                    fileout << tree.get_head() << std::endl;
+                    break;
+                case '?':
+                    filein >> c;
+                    if (tree.contain(std::atoi(c.c_str())))
+                        fileout << "true" << std::endl;
+                    else
+                        fileout << "false" << std::endl;
+                    break;
+            }
+        }
+        fileout.close();
+        filein.close();
+    }
+    return 0;
 }
