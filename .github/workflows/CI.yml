@@ -29,7 +29,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{BUILD_PATH}} --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
   test:
     runs-on: ubuntu-latest
     needs: build
@@ -41,10 +41,11 @@ jobs:
         # Version range or exact version of a Python version to use, using SemVer's version range syntax.
         python-version: 3.x
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        cd testing
+        pip install -r requirements.txt
       
     - name: Testing
       run: |
-        cd testing
         pytest
       
