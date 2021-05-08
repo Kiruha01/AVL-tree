@@ -60,8 +60,8 @@ jobs:
       
     - name: Testing
       working-directory: ./testing
-      env: 
-        BUILD_PATH: ${{github.workspace}}/
+      env:
+        BUILD_PATH: ${{github.workspace}}
       run: |
         pytest
       

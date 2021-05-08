@@ -17,7 +17,7 @@ def fileout(request):
 
 
 def test_tree(fileout):
-    code = subprocess.run(PATH_TO_BUILD + "AVL_tree")
+    code = subprocess.run("sudo " + os.path.join(PATH_TO_BUILD, "AVL_tree"))
     assert code.returncode == 0
     with open(fileout, 'r') as correct_file:
         with open("output.txt", 'r') as testing_file:
