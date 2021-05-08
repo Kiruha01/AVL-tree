@@ -127,18 +127,20 @@ void AVL<T>::remove(T item) {
     Node* new_node = to_remove->right;
     Node* runner; // с этой ноды мы начинаем пересчет diff
     if (new_node == nullptr){
-        if (to_remove->parent->left == to_remove) {
+        if (to_remove->parent == nullptr) {
+            head = to_remove->left;
+            return;
+        }
+        else if (to_remove->parent->left == to_remove) {
             to_remove->parent->left = to_remove->left;
-            if (to_remove->left != nullptr)
-                to_remove->left->parent = to_remove->parent;
             to_remove->parent->diff -= 1;
         }
         else {
             to_remove->parent->right = to_remove->left;
-            if (to_remove->left != nullptr)
-                to_remove->left->parent = to_remove->parent;
             to_remove->parent->diff += 1;
         }
+        if (to_remove->left != nullptr)
+            to_remove->left->parent = to_remove->parent;
         runner = to_remove->parent;
         delete to_remove;
         if (do_rotation(runner))
@@ -151,7 +153,9 @@ void AVL<T>::remove(T item) {
             new_node = new_node->left;
         if (new_node->parent == to_remove){
             new_node->parent = to_remove->parent;
-            if (to_remove->parent->left == to_remove)
+            if (to_remove->parent == nullptr)
+                head = new_node;
+            else if (to_remove->parent->left == to_remove)
                 to_remove->parent->left = new_node;
             else
                 to_remove->parent->right = new_node;
