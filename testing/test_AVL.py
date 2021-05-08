@@ -17,8 +17,8 @@ def fileout(request):
 
 
 def test_tree(fileout):
-    code = subprocess.call(PATH_TO_BUILD + "AVL_tree")
-    assert code == 0
+    code = subprocess.run(PATH_TO_BUILD + "AVL_tree")
+    assert code.returncode == 0
     with open(fileout, 'r') as correct_file:
         with open("output.txt", 'r') as testing_file:
             for l1, l2 in zip(correct_file.readlines(), testing_file.readlines()):
