@@ -30,6 +30,12 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{env.BUILD_PATH}} --config ${{env.BUILD_TYPE}}
+      
+    - name: Save build file
+      uses: actions/upload-artifact@v2
+      with:
+        name: AVL_tree
+        path: ${{ env.BUILD_PATH }}/AVL_tree
   test:
     runs-on: ubuntu-latest
     needs: build
@@ -46,9 +52,16 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        
+    - name: Download build
+      uses: actions/download-artifact@v2
+      with:
+        name: AVL_tree
       
     - name: Testing
       working-directory: ./testing
+      env: 
+        BUILD_PATH: ${{github.workspace}}/
       run: |
         pytest
       
