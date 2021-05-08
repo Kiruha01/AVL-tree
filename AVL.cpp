@@ -406,24 +406,27 @@ int main() {
     if (fileout.is_open() && filein.is_open()) {
         while (!filein.eof()) {
             std::string c;
+            char* end;
             filein >> c;
             switch (c[0]) {
                 case '+':
                     filein >> c;
-                    tree.add(std::atoi(c.c_str()));
+                    tree.add(std::strtol(c.c_str(), &end, 10));
                     fileout << tree.get_head() << std::endl;
                     break;
                 case '-':
                     filein >> c;
-                    tree.remove(std::atoi(c.c_str()));
+                    tree.remove(std::strtol(c.c_str(), &end, 10));
                     fileout << tree.get_head() << std::endl;
                     break;
                 case '?':
                     filein >> c;
-                    if (tree.contain(std::atoi(c.c_str())))
+                    if (tree.contain(std::strtol(c.c_str(), &end, 10)))
                         fileout << "true" << std::endl;
                     else
                         fileout << "false" << std::endl;
+                    break;
+                default:
                     break;
             }
         }
