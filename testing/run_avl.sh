@@ -2,5 +2,6 @@
 
 if [[ -f $1 ]]; then
     cat $1 > input.txt
-    sudo ./AVL_tree
+    chmod +x AVL_tree
+    ./AVL_tree
 fi
