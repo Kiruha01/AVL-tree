@@ -6,9 +6,9 @@ import pytest
 PATH_TO_BUILD = os.environ.get("BUILD_PATH") or "../build/"
 
 
-@pytest.fixture(params=[("input1.txt", "output2.txt"),
+@pytest.fixture(params=[("input1.txt", "output1.txt"),
                         ("input2.txt", "output2.txt"),
-                        ("input3.txt", "output2.txt")])
+                        ("input3.txt", "output3.txt")])
 def fileout(request):
     with open(request.param[0], 'r') as file:
         with open("input.txt", "w") as infile:
