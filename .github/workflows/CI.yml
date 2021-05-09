@@ -43,10 +43,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup Bats
-    working-directory: testing
+      working-directory: testing
       run: |
         ./install_bats.sh
-        
+      
     - name: Download build
       uses: actions/download-artifact@v2
       with:
