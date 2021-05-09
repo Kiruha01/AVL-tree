@@ -45,8 +45,8 @@ jobs:
     - name: Setup Bats
       working-directory: testing
       run: |
-        ./install_bats.sh
-      
+        git clone https://github.com/sstephenson/bats.git
+        
     - name: Download build
       uses: actions/download-artifact@v2
       with:
@@ -58,5 +58,5 @@ jobs:
       env:
         BUILD_PATH: ${{github.workspace}}
       run: |
-        bats tests.bats
+        bats/bin/bats tests.bats
       
