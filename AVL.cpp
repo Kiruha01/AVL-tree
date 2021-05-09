@@ -16,11 +16,11 @@ public:
     void remove(T item);
     bool contain(T item);
 
-    T get_head(){
+    T get_head_diff(){
         if (head == nullptr)
             return 0;
         else
-            return head->data;
+            return head->diff;
     }
 
 private:
@@ -416,12 +416,12 @@ int main() {
                 case '+':
                     filein >> c;
                     tree.add(std::strtol(c.c_str(), &end, 10));
-                    fileout << tree.get_head() << std::endl;
+                    fileout << tree.get_head_diff() << std::endl;
                     break;
                 case '-':
                     filein >> c;
                     tree.remove(std::strtol(c.c_str(), &end, 10));
-                    fileout << tree.get_head() << std::endl;
+                    fileout << tree.get_head_diff() << std::endl;
                     break;
                 case '?':
                     filein >> c;
