@@ -1,4 +1,6 @@
 # AVL дерево
+[![CI pipeline](https://github.com/Kiruha01/AVL-tree/actions/workflows/CI.yml/badge.svg)](https://github.com/Kiruha01/AVL-tree/actions/workflows/CI.yml)
+
 Реализация самобалансирующегося бинарного дерева поиска.
 
 Дерево представляет собой связанные между собой структуры 
